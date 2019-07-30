@@ -6,6 +6,12 @@ import './AddNote.css'
 
 
 export default class AddFolder extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      error:""
+    }
+  }
   static defaultProps = {
     history: {
       push: () => { }
@@ -21,6 +27,11 @@ export default class AddFolder extends Component {
       folderId: event.target['folder-choice'].value,
       modified: new Date(),
     }
+    if (newNote.name ==="" ) {
+      this.setState({
+        error: "Please provide a value"
+      })
+    } else {
     fetch(`${config.API_ENDPOINT}/notes`, {
       method:'POST',
       headers: {
@@ -41,13 +52,14 @@ export default class AddFolder extends Component {
       console.error( {error} )
     })
   }
+}
 
   render() {
     const {folders = [] } = this.context
     return (
       <section className='AddNote' onSubmit={e => this.handleSubmit(e)}>
         <h2>Create a Note</h2>
-        <NotefulForm onSubmit={this.handleSubmit}>
+        <NotefulForm>
           <div className='form'>
             <label htmlFor='note-name-input'>
               Enter a note name: 
@@ -73,6 +85,9 @@ export default class AddFolder extends Component {
             <button type='submit'>
 							Submit
             </button>
+          </div>
+          <div className="error">
+            {this.state.error}
           </div>
         </NotefulForm>
       </section>

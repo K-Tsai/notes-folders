@@ -5,6 +5,13 @@ import config from '../config'
 import './AddFolder.css'
 
 export default class AddFolder extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      error: ""
+    }
+  }
+
   static defaultProps = {
     history: {
       push: () => { }
@@ -13,9 +20,15 @@ export default class AddFolder extends Component {
   static contextType = ApiContext;
   handleSubmit = event => {
     event.preventDefault()
+    let currentValue= event.target.folderInput.value
     const folder = {
       name: event.target['folderInput'].value
     }
+    if (currentValue === "") {
+      this.setState({
+        error: "Please provide a folder name"
+      });
+    } else {
     fetch(`${config.API_ENDPOINT}/folders`, {
       method: 'POST',
       headers: {
@@ -36,6 +49,7 @@ export default class AddFolder extends Component {
       console.error( {error} )
     })
   }
+  }
 
   render() {
     return (
@@ -52,6 +66,9 @@ export default class AddFolder extends Component {
             <button type='submit'>
               Add folder
             </button>
+          </div>
+          <div className="error">
+            {this.state.error}
           </div>
         </NotefulForm>
       </section>
